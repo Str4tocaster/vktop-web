@@ -1,4 +1,6 @@
-package com.valeriymiller.vktop;
+package com.valeriymiller.vktop.servlet;
+
+import com.valeriymiller.vktop.model.TopPosition;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +18,7 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<TopPosition> top = new ArrayList<com.valeriymiller.vktop.TopPosition>();
+        List<TopPosition> top = new ArrayList<TopPosition>();
 
         // запрос к базе
         String selectTableSQL = "SELECT NAME, COUNT FROM TOPARTIST";
@@ -38,7 +40,6 @@ public class MainServlet extends HttpServlet {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        //
 
         req.setAttribute("positions", top);
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);

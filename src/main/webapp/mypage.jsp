@@ -13,6 +13,7 @@
 </head>
 <body>
     Вы передали в качестве параметра: <B><%= request.getParameter("param") %></B>
+    ${user}
     <h1>Топ 100 исполнителей:</h1>
     <table>
         <c:forEach var="position" items="${positions}">

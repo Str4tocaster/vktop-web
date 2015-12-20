@@ -1,4 +1,4 @@
-package com.valeriymiller.vktop;
+package com.valeriymiller.vktop.model;
 
 /**
  * Created by valer on 02.12.2015.

@@ -6,12 +6,22 @@
 
     <servlet>
         <servlet-name>mainServlet</servlet-name>
-        <servlet-class>com.valeriymiller.vktop.MainServlet</servlet-class>
+        <servlet-class>com.valeriymiller.vktop.servlet.MainServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>mainServlet</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>com.valeriymiller.vktop.servlet.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
 </web-app>
