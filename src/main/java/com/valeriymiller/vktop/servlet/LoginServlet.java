@@ -1,6 +1,9 @@
 package com.valeriymiller.vktop.servlet;
 
 import com.valeriymiller.vktop.api.Api;
+import com.valeriymiller.vktop.api.db.DBApi;
+import com.valeriymiller.vktop.api.db.HibernateUtil;
+import com.valeriymiller.vktop.model.Token;
 import com.valeriymiller.vktop.model.User;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,6 +12,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Expression;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -30,7 +36,6 @@ public class LoginServlet extends HttpServlet {
     String AppID = "5099050";
     String client_secret = "jykiEzsP5iai8bOUWYBJ";
     String redirect_uri = "http://localhost:8080/vktop/login";
-    String redirect_uri2 = "http://localhost:8080/vktop/savetoken";
     String scope = "groups,offline";
 
     @Override
@@ -56,7 +61,12 @@ public class LoginServlet extends HttpServlet {
             String token = jsonObject.getString("access_token");
             User user = Api.getUserInfo(token);
 
-            // здесь нужно сделать запись токена в базу
+            // проверяем, есть ли токен в базе
+            List tokens = DBApi.getToken(Integer.valueOf(user.getVkId()));
+
+            if (tokens.isEmpty()) { // если токена нет, помещаем его в базу
+                DBApi.saveToken(new Token(Integer.valueOf(user.getVkId()), token));
+            }
 
             req.getSession().setAttribute("user", user.getFirstName() + " " + user.getLastName());
             resp.sendRedirect("http://localhost:8080/vktop/");
