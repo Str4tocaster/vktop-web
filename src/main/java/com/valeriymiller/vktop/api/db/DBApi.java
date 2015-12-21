@@ -1,6 +1,7 @@
 package com.valeriymiller.vktop.api.db;
 
 import com.valeriymiller.vktop.model.Token;
+import com.valeriymiller.vktop.model.TopPosition;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
@@ -27,5 +28,14 @@ public class DBApi {
         session.beginTransaction();
         session.save(token);
         session.getTransaction().commit();
+    }
+
+    public static List getTop() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Criteria criteria = session.createCriteria(TopPosition.class);
+        List top = criteria.list(); //помещаем результаты в список
+
+        return top;
     }
 }

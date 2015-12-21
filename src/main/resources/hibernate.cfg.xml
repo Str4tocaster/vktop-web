@@ -12,5 +12,6 @@
         <property name="show_sql">true</property>
 
         <mapping resource="Token.hbm.xml"></mapping>
+        <mapping resource="TopPosition.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

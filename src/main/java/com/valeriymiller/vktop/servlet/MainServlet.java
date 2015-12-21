@@ -1,5 +1,6 @@
 package com.valeriymiller.vktop.servlet;
 
+import com.valeriymiller.vktop.api.db.DBApi;
 import com.valeriymiller.vktop.model.TopPosition;
 
 import javax.servlet.ServletException;
@@ -17,47 +18,11 @@ import java.util.List;
 public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        List<TopPosition> top = new ArrayList<TopPosition>();
-
-        // запрос к базе
-        String selectTableSQL = "SELECT NAME, COUNT FROM TOPARTIST";
-        Connection dbConnection;
-        Statement statement;
-
-        try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
-            // выбираем данные с БД
-            ResultSet rs = statement.executeQuery(selectTableSQL);
-
-            // И если что то было получено то цикл while сработает
-            while (rs.next()) {
-                top.add(new TopPosition(rs.getString("NAME"), rs.getInt("COUNT")));
-            }
-            dbConnection.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        // получаем топ из бд
+        List top = DBApi.getTop();
 
         req.setAttribute("positions", top);
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);
     }
-
-    private static Connection getDBConnection() {
-        Connection dbConnection = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            dbConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/vktop", "root", null);
-            return dbConnection;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return dbConnection;
-    }
+    
 }
