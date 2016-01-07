@@ -3,7 +3,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="com.valeriymiller.vktop.model.Token" table="token" catalog="vktop">
+    <class name="com.valeriymiller.vktop.model.Token" table="tokens" catalog="vkproject_temp">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />

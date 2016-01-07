@@ -3,23 +3,36 @@ package com.valeriymiller.vktop.model;
 /**
  * Created by Михаил on 24.10.2015.
  */
-public class User extends VkEntity {
+public class User {
 
+    private int id;
+    private String vkId;
     private String lastName;
     private String firstName;
 
-    public User(String VkID, String lastName, String firstName) {
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.setVkId(VkID);
-    }
-    public User(int ID, String VkID, String lastName, String firstName) {
-        this.setID(ID);
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.setVkId(VkID);
-    }
     public User() {
+    }
+
+    public User(String vkId, String lastName, String firstName) {
+        this.vkId = vkId;
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getVkId() {
+        return vkId;
+    }
+
+    public void setVkId(String vkId) {
+        this.vkId = vkId;
     }
 
     public String getLastName() {
@@ -37,5 +50,4 @@ public class User extends VkEntity {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
 }

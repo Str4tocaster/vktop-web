@@ -12,16 +12,20 @@
     <title>VK-Top</title>
 </head>
 <body>
-    Вы передали в качестве параметра: <B><%= request.getParameter("param") %></B>
+    <%--отображаем кнопку авторизации если в cookie нет id пользователя--%>
+    <c:if test="${empty user}">
+        <%@ include file="login.jsp" %>
+    </c:if>
     ${user}
     <h1>Топ 100 исполнителей:</h1>
-    <table>
-        <c:forEach var="position" items="${positions}">
-            <tr>
-                <td>${position.title}</td>
-                <td>${position.count}</td>
-            </tr>
-        </c:forEach>
-    </table>
+    ${output}
+    <%--<table>--%>
+        <%--<c:forEach var="position" items="${positions}">--%>
+            <%--<tr>--%>
+                <%--<td>${position.title}</td>--%>
+                <%--<td>${position.count}</td>--%>
+            <%--</tr>--%>
+        <%--</c:forEach>--%>
+    <%--</table>--%>
 </body>
 </html>

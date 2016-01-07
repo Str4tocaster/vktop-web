@@ -5,6 +5,7 @@ import com.valeriymiller.vktop.api.db.DBApi;
 import com.valeriymiller.vktop.api.db.HibernateUtil;
 import com.valeriymiller.vktop.model.Token;
 import com.valeriymiller.vktop.model.User;
+import com.valeriymiller.vktop.queue.Producer;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -16,8 +17,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
 import org.json.JSONObject;
+import project.FilterTop;
 
+import javax.jms.JMSException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +36,9 @@ import java.util.List;
 /**
  * Created by valer on 02.12.2015.
  */
+
+// логика авторизации
+
 public class LoginServlet extends HttpServlet {
     String AppID = "5099050";
     String client_secret = "jykiEzsP5iai8bOUWYBJ";
@@ -61,15 +68,28 @@ public class LoginServlet extends HttpServlet {
             String token = jsonObject.getString("access_token");
             User user = Api.getUserInfo(token);
 
-            // проверяем, есть ли токен в базе
-            List tokens = DBApi.getToken(Integer.valueOf(user.getVkId()));
+            // проверяем, есть ли пользователь в базе
+            List users = DBApi.getUser(user.getVkId());
 
-            if (tokens.isEmpty()) { // если токена нет, помещаем его в базу
-                DBApi.saveToken(new Token(Integer.valueOf(user.getVkId()), token));
+            if (users.isEmpty()) { // если пользователя нет, помещаем его и токен в базу
+                DBApi.saveUser(user);
+                DBApi.saveToken(new Token(user.getId(), token));
+
+                // добавляем в очередь заявку на обработку данных пользователя
+                Producer producer = new Producer("CreateUser");
+                try {
+                    producer.sendTextMessage(String.valueOf(user.getId()));
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
             }
 
-            req.getSession().setAttribute("user", user.getFirstName() + " " + user.getLastName());
-            resp.sendRedirect("http://localhost:8080/vktop/");
+            // записываем id пользователя в cookie
+            user = (User) users.get(0);
+            Cookie userId = new Cookie("userId", String.valueOf(user.getId()));
+            resp.addCookie(userId);
+
+            resp.sendRedirect("http://localhost:8080/vktop/main");
             return;
         }
 
@@ -78,11 +98,9 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String message = "вы не нажимали на кнопки";
+        String message = "";
 
         if (req.getParameter("login") != null) {
-            //message = "запрос на логин";
-
             String uri = String.format(
                     "https://oauth.vk.com/authorize?client_id=%s&redirect_uri=%s&display=page&scope=%s&v=5.37",
                     AppID,
