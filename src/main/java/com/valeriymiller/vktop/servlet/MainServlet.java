@@ -37,16 +37,45 @@ public class MainServlet extends HttpServlet {
             }
         }
 
-        // получаем текущую дату
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-        String date = sdf.format(new Date());
+        // получаем параметры запроса
+        String type = req.getParameter("topType");
+        int topType = 1;
+        if (type != null) {
+           topType = Integer.valueOf(type);
+        }
+
+        String size = req.getParameter("topSize");
+        int topSize = 10;
+        if (size != null) {
+            topSize = Integer.valueOf(size);
+        }
+
+        String sex = req.getParameter("topSex");
+        int topSex = 0;
+        if (sex != null) {
+            topSex = Integer.valueOf(sex);
+        }
+
+        String age = req.getParameter("topAge");
+        int topAge = 0;
+        if (age != null && !age.equals("")) {
+            topAge = Integer.valueOf(age);
+        }
+
+        // получаем выбранную дату
+        String topDate = req.getParameter("topDate");
+        // или получаем текущую дату, если дата не выбрана
+        if (topDate == null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+            topDate = sdf.format(new Date());
+        }
 
         // если пользователь авторизован
         if (userId != null) {
             // посылаем в очередь сообщение с просьбой составить топ
             XStream xstream = new XStream(new StaxDriver());
             Producer producer = new Producer("ToTop");
-            FilterTop filterTop = new FilterTop(userId, 2, 0, 10, 2);
+            FilterTop filterTop = new FilterTop(userId, topSex, topAge, topSize, topType, topDate);
             try {
                 producer.sendObjectMessage(xstream.toXML(filterTop));
             } catch (JMSException e) {
@@ -73,7 +102,17 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("output", "вы не авторизованы");
         }
 
+        req.setAttribute("topType", topType);
+        req.setAttribute("topSize", topSize);
+        req.setAttribute("topDate", topDate);
+        req.setAttribute("topSex", topSex);
+        req.setAttribute("topAge", topAge);
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
     }
 
 }
