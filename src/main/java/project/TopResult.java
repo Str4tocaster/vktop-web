@@ -1,18 +1,22 @@
 package project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by valer on 06.01.2016.
  */
 public class TopResult {
     private String vkIdUer;
-    private String result;
+    private List<TopPosition> result;
 
-    public TopResult(String vkIdUer, String result) {
+    public TopResult(String vkIdUer, List<TopPosition> result) {
         this.vkIdUer = vkIdUer;
-        this.result = result;
+        this.result = new ArrayList<TopPosition>();
+        this.result.addAll(result);
     }
 
-    public String getResult() {
+    public List<TopPosition> getResult() {
         return result;
     }
 }

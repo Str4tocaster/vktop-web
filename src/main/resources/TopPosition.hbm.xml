@@ -3,7 +3,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="com.valeriymiller.vktop.model.TopPosition" table="topartist" catalog="vktop">
+    <class name="project.TopPosition" table="topartist" catalog="vktop">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />

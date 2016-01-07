@@ -108,7 +108,7 @@ public class MainServlet extends HttpServlet {
 
             // возвращаем топ
             req.setAttribute("user", userId);
-            req.setAttribute("output", topResult.getResult());
+            req.setAttribute("positions", topResult.getResult());
 
         } else {
             // в этом else должна быть страница со стандартным топом или заглушка

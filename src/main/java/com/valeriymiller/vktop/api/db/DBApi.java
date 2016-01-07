@@ -1,7 +1,7 @@
 package com.valeriymiller.vktop.api.db;
 
 import com.valeriymiller.vktop.model.Token;
-import com.valeriymiller.vktop.model.TopPosition;
+import project.TopPosition;
 import com.valeriymiller.vktop.model.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
