@@ -2,6 +2,8 @@ package com.valeriymiller.vktop.servlet;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.valeriymiller.vktop.api.db.DBApi;
+import com.valeriymiller.vktop.model.User;
 import project.FilterTop;
 import project.TopResult;
 import com.valeriymiller.vktop.queue.Consumer;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by valer on 02.12.2015.
@@ -70,6 +73,18 @@ public class MainServlet extends HttpServlet {
             topDate = sdf.format(new Date());
         }
 
+        // если требуется информация для другого пользователя
+        String specialId = req.getParameter("specialId");
+        if (specialId != null && !specialId.equals("")) {
+            // проверяем есть ли пользователь в базе
+            List specialUsers = DBApi.getUser(specialId);
+            if (!specialUsers.isEmpty()) {
+                User specialUser = (User) specialUsers.get(0);
+                // изменяем id пользователя на необходимого
+                userId = specialUser.getId();
+            }
+        }
+
         // если пользователь авторизован
         if (userId != null) {
             // посылаем в очередь сообщение с просьбой составить топ
@@ -107,6 +122,7 @@ public class MainServlet extends HttpServlet {
         req.setAttribute("topDate", topDate);
         req.setAttribute("topSex", topSex);
         req.setAttribute("topAge", topAge);
+        req.setAttribute("specialId", specialId);
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);
     }
 

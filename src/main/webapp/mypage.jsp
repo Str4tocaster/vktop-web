@@ -20,6 +20,7 @@
     ${user}
 
     <form action="main" method="post">
+        <input type="text" name="specialId" value="${specialId}" title="id пользователя"/>
         <p>
             <select name="topType">
                 <option disabled>Выберите тип рейтинга</option>
